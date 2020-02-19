@@ -1,1 +1,1 @@
-# GiraffesEmailFiltration
+# Giraffes Email Filtration Application
