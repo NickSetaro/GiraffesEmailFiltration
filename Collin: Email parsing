@@ -1,1 +1,222 @@
+package EmailWork;
+import java.io.IOException;
+import java.util.*;
+import javax.activation.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.naming.*;
+import org.jsoup.Jsoup;
 
+public class Emails {
+	
+	String reciverEmail;
+	String reciverPassword;
+	String hostVal;
+	String protical;
+	String[] emailList;
+	Folder emailFolderObj; 
+	Store storeObj;
+	
+	
+	String subject;
+	String sender;
+	String content;
+	ArrayList<Message> messages = new ArrayList<Message>();
+	
+	//Constructor
+	public Emails(String reciverEmail,String reciverPassword, String hostVal, String protical, String[] emailList)
+	{
+		this.reciverEmail = reciverEmail;
+		this.reciverPassword = reciverPassword;
+		this.hostVal = hostVal;
+		this.protical = protical;
+		this.emailList = emailList;
+	}
+	
+	
+	/*
+	 * @param takes in 4 strings and 1 array of strings(the emailList), parses through the email's in INBOX to find
+	 * any that match to any email In the email list and will add each subsequent message to the message stack to
+	 * used later.
+	 */
+	public ArrayList<Message> parseMail(String hostval,String mailport,String username,String password, String[] emailList) {
+		
+		try {
+		      //Set property values
+		      Properties propvals = new Properties();
+		      propvals.put("mail.imap.host", hostval);
+		      propvals.put("mail.imap.port", "993");
+		      propvals.put("mail.imap.starttls.enable", "true");
+		      Session emailSessionObj = Session.getDefaultInstance(propvals);  
+		      //imaps store object and connect with the server, the s at the end stands for imap(secure).
+		      storeObj = emailSessionObj.getStore("imaps");
+		      
+		      storeObj.connect(hostval, username, password);
+		      
+		      //Create folder object and open it in read-only mode
+		      emailFolderObj = storeObj.getFolder("INBOX");
+		      emailFolderObj.open(Folder.READ_ONLY);
+		      
+		      /*Fetch messages from the folder and print in a loop.
+		       * We wont be printing in this method, just for debugging.
+		       */
+		      Message[] messageobjs = emailFolderObj.getMessages(); 
+		      System.out.println("message.length----" + messageobjs.length);
+		 
+		      //Search through 100 email starting at the most recent.
+		      for (int i = messageobjs.length-1; i > messageobjs.length-100 ; i--) 
+		      {
+		    	  Message indvidualmsg = messageobjs[i];
+		    	  //Iterate through the emailList.
+		    	  for(int j = 0; j < emailList.length; j++) 
+		    	  {
+		    		  sender = indvidualmsg.getFrom()[0].toString();
+		    		  
+		    		  //Look for a match with the sender and any emailAddress in the emailList.
+		    		  if(sender.contains(emailList[j]))
+		    		  {
+		    			  //if in the emailList add to the message list
+		    			  messages.add(messageobjs[i]); 
+		    			  
+		    			  
+		    			  //Stuff for my own debugging sanity
+		    			  subject = indvidualmsg.getSubject();
+		    			  sender = indvidualmsg.getFrom()[0].toString();
+		    			  content = indvidualmsg.getContent().toString();
+		    			   
+		    			  System.out.println("Printing individual messages");
+		    			  System.out.println("No# " + (i + 1));
+		    			  System.out.println("Email Subject: " + subject);
+		    			  System.out.println("Sender: " + sender);
+		    			  System.out.println("Content: " + content);
+		    		  }
+		 
+		    	  }
+		      }
+		      } catch (NoSuchProviderException exp) {
+		         exp.printStackTrace();
+		      } catch (MessagingException exp) {
+		         exp.printStackTrace();
+		      } catch (Exception exp) {
+		         exp.printStackTrace();
+		      }
+		return messages;
+	}
+	
+	
+	/*
+	 * @return the contact message List for further use.
+	 */
+	public ArrayList<Message> getMessageList() 
+	{
+		return messages;
+	}
+	
+	/*
+	 * @param Takes in a Type Message and determins the content type, if Text/plain return the result, if
+	 * a multipart boy call getTextFromMultipart
+	 * @returns a the email body of type string 
+	 */
+	private String getTextFromMessage(Message message) throws MessagingException, IOException 
+	{
+	    String result = "";
+	    if (message.isMimeType("text/plain")) {
+	        result = message.getContent().toString();
+	    } else if (message.isMimeType("multipart/*")) {
+	        MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
+	        result = getTextFromMimeMultipart(mimeMultipart);
+	    }
+	    return result;
+	}
+
+	/*
+	 * @param takes in a type Message
+	 * @returns a multipart email body converted to text and returns a type string.
+	 */
+	private String getTextFromMimeMultipart(MimeMultipart mimeMultipart)  throws MessagingException, IOException
+	{
+	    String result = "";
+	    int count = mimeMultipart.getCount();
+	    for (int i = 0; i < count; i++) {
+	        BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+	        if (bodyPart.isMimeType("text/plain")) {
+	            result = result + bodyPart.getContent();
+	            break; // without break same text appears two times
+	        } else if (bodyPart.isMimeType("text/html")) {
+	            String html = (String) bodyPart.getContent();
+	            result = result  + org.jsoup.Jsoup.parse(html).text();
+	        } else if (bodyPart.getContent() instanceof MimeMultipart){
+	            result = result + getTextFromMimeMultipart((MimeMultipart)bodyPart.getContent());
+	        }
+	    }
+	    return result;
+	}
+	
+	
+	
+	
+	/*
+	 * @param takes in a ArrayLis of type Message(we can change the data struct if to slow) containing all the
+	 * message that were picked up by the parse mail method.
+	 * @return, will be returning the notification content for each email.
+	 * Currently doesnt have the keyword searching functions.
+	 */
+	public void returnInfo(ArrayList<Message> ContactMessages) throws MessagingException, IOException
+	{
+		Iterator<Message> itr = ContactMessages.iterator();
+		String result;
+		
+		while(itr.hasNext())
+		{
+			Message message = itr.next();
+			
+				subject = message.getSubject();
+				content = getTextFromMessage(message);
+				System.out.println("------------------------------------------------------------");
+				System.out.println("Subject: " + subject);
+				System.out.println("Content: " + content);
+				System.out.println("------------------------------------------------------------");
+	
+		}
+		
+	}
+	
+	/*
+	 * Closes the open object.
+	 */
+	public void CloseAllObjects() throws MessagingException, IOException{
+		emailFolderObj.close(false);
+	    storeObj.close();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//Just a demo for debugging
+	public static void main(String[] args) throws MessagingException, IOException 
+	{
+		String reciverEmail = "wisserc8@students.rowan.edu";
+		String reciverPassword = "**********";
+		String hostVal = "imap.gmail.com";
+		String protical = "imap";
+		String[] emailList = {"myersjac@rowan.edu", "wargo87@students.rowan.edu"};
+		
+		Emails myobj = new Emails(reciverEmail, reciverPassword, hostVal, protical, emailList);
+		myobj.parseMail(myobj.hostVal, myobj.protical, myobj.reciverEmail, myobj.reciverPassword, myobj.emailList);
+		myobj.returnInfo(myobj.messages);
+		myobj.CloseAllObjects();
+			
+	}
+	
+}
