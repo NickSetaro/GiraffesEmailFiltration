@@ -323,7 +323,7 @@ public class EmailReceiver
 	
 	public void removeAlias(String address) {
 		for(int i = 0; i < AliasEmails.size(); i++) {
-			if(AliasEmails.get(i).contentEquals(address)) {
+			if(AliasEmails.get(i).equals(address)) {
 				AliasEmails.remove(i);
 			}
 		}
