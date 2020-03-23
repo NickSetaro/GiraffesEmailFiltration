@@ -138,22 +138,34 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(8),
           scrollDirection: Axis.vertical,
           children: <Widget>[
-           Container(
-             height: 50,
-             color: Colors.white,
-             child: const Center(child: Text('Pinned Notifications')),
-          ),
-           Container(
-             height: 50,
-             color: Colors.white,
-             child: const Center(child: Text('Snoozed Notifications')),
-           ),
-           Container(
-             height: 50,
-             color: Colors.white,
-             child: const Center(child: Text('Daily Notifications')),
-         ),
+            Column(
+              children: <Widget>[
+                Text('Something'),
+                Text('Another Thing'),
+                Text('A Third Thing'),
+                Text('Something'),
+                Text('Another Thing'),
+                Text('A Third Thing'),
+              ]
+            ),
+            Column(
+                children: <Widget>[
+                  Text('Something'),
+                  Text('Another Thing'),
+                  Text('A Third Thing'),
+                  Text('Something'),
+                  Text('Another Thing'),
+                  Text('A Third Thing'),
+                ]
+            ),
        ]
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+        },
+        tooltip: 'Add Bucket',
+        child: const Icon(Icons.add),
       ),
     );
   }
