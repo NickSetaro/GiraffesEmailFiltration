@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'add_bucket.dart';
 
 void main() => runApp(MyApp());
 
@@ -166,7 +167,9 @@ class _HomePageState extends State<HomePage> {
           ]
     ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+            showModalBottomSheet(context: context, builder: (BuildContext context) => AddBucket());
+        },
         tooltip: 'Add Bucket',
         child: const Icon(Icons.add),
       ),
@@ -199,3 +202,5 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
+
+
