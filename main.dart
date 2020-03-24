@@ -28,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-
     final emailField = TextField(
       controller: emailController,
       obscureText: false,
@@ -37,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: "Email",
           border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
     );
 
     final passwordField = TextField(
@@ -48,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: "Password",
           border:
-          OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
     );
 
     final loginButton = Material(
@@ -59,7 +58,8 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -106,64 +106,67 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class HomePage extends StatefulWidget {
-
   @override
   _HomePageState createState() => _HomePageState();
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Rowan Email Filtration')
-      )
-    );
+        appBar: AppBar(title: const Text('Rowan Email Filtration')));
   }
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Notifications'),
-        actions: <Widget>[
-          IconButton(
+      appBar: AppBar(title: Text('Notifications'), actions: <Widget>[
+        IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
-            }
-          )
-        ]
-      ),
-        body: ListView(
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()));
+            })
+      ]),
+      body: ListView(
           padding: const EdgeInsets.all(8),
           scrollDirection: Axis.vertical,
           children: <Widget>[
-            Column(
-              children: <Widget>[
-                Text('Something'),
-                Text('Another Thing'),
-                Text('A Third Thing'),
-                Text('Something'),
-                Text('Another Thing'),
-                Text('A Third Thing'),
-              ]
+            Container(
+                decoration: const BoxDecoration(
+                    border: Border(
+                        top: BorderSide(width: 1.0, color: Colors.black),
+                        left: BorderSide(width: 1.0, color: Colors.black),
+                        right: BorderSide(width: 1.0, color: Colors.black),
+                        bottom: BorderSide(width: 1.0, color: Colors.black),
+                    ),
+                ),
+              child: Column(
+                  children: <Widget> [
+                    Text('Pinned Notifications'),
+                    Divider(thickness: 3, color: Colors.black)
+                  ]
+              )
             ),
-            Column(
-                children: <Widget>[
-                  Text('Something'),
-                  Text('Another Thing'),
-                  Text('A Third Thing'),
-                  Text('Something'),
-                  Text('Another Thing'),
-                  Text('A Third Thing'),
-                ]
-            ),
-       ]
-      ),
+            SizedBox(height: 20, width: 20),
+            Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(width: 1.0, color: Colors.black),
+                    left: BorderSide(width: 1.0, color: Colors.black),
+                    right: BorderSide(width: 1.0, color: Colors.black),
+                    bottom: BorderSide(width: 1.0, color: Colors.black),
+                  ),
+                ),
+                child: Column(
+                    children: <Widget> [
+                      Text('Snoozed Notifications'),
+                      Divider(thickness: 3, color: Colors.black)
+                    ]
+                )
+            )
+          ]
+    ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-        },
+        onPressed: () {},
         tooltip: 'Add Bucket',
         child: const Icon(Icons.add),
       ),
@@ -172,15 +175,11 @@ class _HomePageState extends State<HomePage> {
 }
 
 class SettingsPage extends StatefulWidget {
-
   @override
   _SettingsPageState createState() => _SettingsPageState();
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: const Text('Rowan Email Filtration')
-        )
-    );
+        appBar: AppBar(title: const Text('Rowan Email Filtration')));
   }
 }
 
@@ -188,35 +187,15 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings')
-      ),
+      appBar: AppBar(title: Text('Settings')),
       body: ListView(
           padding: const EdgeInsets.all(8),
           scrollDirection: Axis.vertical,
           children: <Widget>[
-            Container(
-              height: 50,
-              color: Colors.white,
-              child: const Center(child: Text('Some Setting')),
-            ),
-            Container(
-              height: 50,
-              color: Colors.white,
-              child: const Center(child: Text('I\'m Tired')),
-            ),
-            Container(
-              height: 50,
-              color: Colors.white,
-              child: const Center(child: Text('Flutter\'s Terrible')),
-            ),
-          ]
-      ),
+            Column(children: <Widget>[Text('Setting One')]),
+            Divider(color: Colors.black, thickness: 5),
+            Column(children: <Widget>[Text('Setting Two')]),
+          ]),
     );
   }
 }
-
-
-
-
-
