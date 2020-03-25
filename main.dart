@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Notifications'), actions: <Widget>[
+      appBar: AppBar(title: Text('Notifications') ,actions: <Widget>[
         IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
@@ -133,20 +133,30 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Container(
                 decoration: const BoxDecoration(
-                    border: Border(
-                        top: BorderSide(width: 1.0, color: Colors.black),
-                        left: BorderSide(width: 1.0, color: Colors.black),
-                        right: BorderSide(width: 1.0, color: Colors.black),
-                        bottom: BorderSide(width: 1.0, color: Colors.black),
-                    ),
+                  border: Border(
+                    top: BorderSide(width: 1.0, color: Colors.black),
+                    left: BorderSide(width: 1.0, color: Colors.black),
+                    right: BorderSide(width: 1.0, color: Colors.black),
+                    bottom: BorderSide(width: 1.0, color: Colors.black),
+                  ),
                 ),
-              child: Column(
-                  children: <Widget> [
-                    Text('Pinned Notifications'),
-                    Divider(thickness: 3, color: Colors.black)
-                  ]
-              )
-            ),
+                child: Column(children: <Widget>[
+                  Text('Pinned Notifications'),
+                  Divider(thickness: 3, color: Colors.black),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Divider(thickness: 2, color: Colors.grey),
+                      Text(
+                        'myers@rowan.edu \nSubj:  \'Goto meeting\' \n"Hi all. Hope you are doing well."  \nSent: 03/22',
+                        style: TextStyle(fontSize: 16,
+                        fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Divider(thickness: 2, color: Colors.grey),
+                    ],
+                  ),
+                ])),
             SizedBox(height: 20, width: 20),
             Container(
                 decoration: const BoxDecoration(
@@ -157,18 +167,75 @@ class _HomePageState extends State<HomePage> {
                     bottom: BorderSide(width: 1.0, color: Colors.black),
                   ),
                 ),
-                child: Column(
-                    children: <Widget> [
-                      Text('Snoozed Notifications'),
-                      Divider(thickness: 3, color: Colors.black)
-                    ]
-                )
-            )
-          ]
-    ),
+                child: Column(children: <Widget>[
+                  Text('Snoozed Notifications'),
+                  Divider(thickness: 3, color: Colors.black),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Divider(thickness: 2, color: Colors.grey),
+                      Text(
+                        'rowan@getrave.com \nSubj:  \'Two Confirmed Cases, Campus Closures\''
+                            ' \n"Rowan Alert/Timely Warning:Today, we report that two individuals"  \nSent: 03/21',
+                        style: TextStyle(fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Divider(thickness: 2, color: Colors.grey),
+                      Divider(thickness: 2, color: Colors.grey),
+                      Text(
+                        'colomys7@students.rowan.edu \nSubj:  \'Team Meeting\''
+                            ' \n"Hey guys, we have the upcomming sprint review on Wednesday"  \nSent: 03/20',
+                        style: TextStyle(fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Divider(thickness: 2, color: Colors.grey),
+                    ],
+                  ),
+                ])),
+            SizedBox(height: 20, width: 20),
+            Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(width: 1.0, color: Colors.black),
+                    left: BorderSide(width: 1.0, color: Colors.black),
+                    right: BorderSide(width: 1.0, color: Colors.black),
+                    bottom: BorderSide(width: 1.0, color: Colors.black),
+                  ),
+                ),
+                child: Column(children: <Widget>[
+                  Text('Daily Notifications'),
+                  Divider(thickness: 3, color: Colors.black),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Divider(thickness: 2, color: Colors.grey),
+                      Text(
+                        'poolos@rowan.edu \nSubj:  \'	Important Information from CS Advising\''
+                            ' \n"Hello, Computer Science and Computing & Informatics Students, We care deeply about your success"  \nSent: 03/24',
+                        style: TextStyle(fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Divider(thickness: 2, color: Colors.grey),
+                      Divider(thickness: 2, color: Colors.grey),
+                      Text(
+                        'IRTSupport@rowan.edu \nSubj:  \'IRT COVID-19 Updates: Blackboard maintenance for Glassboro & Webex scheduling tip\''
+                            ' \n"As Information Resources & Technology responds to the University’s transition to working, teaching and learning remotely"  \nSent: 03/24',
+                        style: TextStyle(fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Divider(thickness: 2, color: Colors.grey),
+                    ],
+                  ),
+                ])),
+          ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-            showModalBottomSheet(context: context, builder: (BuildContext context) => AddBucket());
+          showModalBottomSheet(
+              context: context, builder: (BuildContext context) => AddBucket());
         },
         tooltip: 'Add Bucket',
         child: const Icon(Icons.add),
@@ -202,5 +269,3 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
-
-
