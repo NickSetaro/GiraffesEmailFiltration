@@ -59,8 +59,12 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+          if(passwordController.text.compareTo('password')==0 && emailController.text.compareTo('setaron5@students.rowan.edu')==0) {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomePage()));
+          } else {
+
+          }
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -70,6 +74,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Container(
           color: Colors.white,
