@@ -1,6 +1,7 @@
 package com.example.flutterappv5;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 
 import io.flutter.embedding.android.FlutterActivity;
@@ -10,6 +11,8 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends FlutterActivity{
@@ -30,7 +33,7 @@ public class MainActivity extends FlutterActivity{
 
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler((call, result) -> {
-                    mainHandler.post(new Runnable() {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
 
@@ -45,7 +48,7 @@ public class MainActivity extends FlutterActivity{
 
 
                                 else if(call.method.equals("addEmail")) {
-                                    String email = call.argument("address");
+                                    String email = call.argument("email");
                                     int size = filter.emailFilter.size();
                                     filter.addAbsolute(email);
                                     if (filter.emailFilter.size() < size) {
@@ -56,7 +59,7 @@ public class MainActivity extends FlutterActivity{
                                 }
 
                                 else if(call.method.equals("getemaillist")){
-                                    result.success((filter.getEmailAddresses()));
+                                    result.success(filter.getEmailAddresses());
                                 }
 
 
