@@ -15,12 +15,12 @@ class emailList extends StatefulWidget {
 // ignore: camel_case_types
 class _emailListPage extends State<emailList> {
   static const platform = MethodChannel("samples.flutter.dev/native");
-  List<String> emails;
+  List<dynamic> emails = <dynamic>[];
 
   @override
   Widget build(BuildContext context) {
    return FutureBuilder<List>(
-       future: getEmailList(),
+       future: _getEmailList(),
         // ignore: missing_return
         builder: (BuildContext context, AsyncSnapshot<List> snapshot){
         if(snapshot.hasError){
@@ -44,21 +44,9 @@ class _emailListPage extends State<emailList> {
     }
 
 
-  Future<List> getEmailList() async{
-    List<String> result;
-    try {
-      result = await platform.invokeMethod('getemaillist');
-      setState(() {
-        emails = result;
-      });
-    }on PlatformException catch (e) {
-      log("Failed to Invoke");
-    }
-    return result;
+    Future<List> _getEmailList() async{
+      final emails = await platform.invokeListMethod('getemaillist');
+      log(emails[0]);
+      return emails;
   }
-
-   void waitMail() async{
-    await getEmailList();
-   }
-
 }
