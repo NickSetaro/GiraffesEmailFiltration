@@ -203,7 +203,9 @@ class _HomePageState extends State<HomePage> {
     ]),
       body: ReorderableListView(
         onReorder: (oldIndex, newIndex) {
-
+          //call to backend to reorder list
+          //for example for now
+          _reorder(oldIndex, newIndex);
         },
         padding: const EdgeInsets.all(8),
         children: <Widget> [
@@ -236,6 +238,17 @@ class _HomePageState extends State<HomePage> {
         )
       );
     return notifs;
+  }
+
+  _reorder(int oldIndex, int newIndex) {
+    setState((){
+      if(newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      final Bucket b = buckets.bucketList.removeAt(oldIndex);
+      buckets.bucketList.insert(newIndex, b);
+      },
+    );
   }
 
   /*
