@@ -201,19 +201,23 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => SettingsPage()));
         }),
     ]),
-      body: ListView.builder(
+      body: ReorderableListView(
+        onReorder: (oldIndex, newIndex) {
+
+        },
         padding: const EdgeInsets.all(8),
-        itemCount: buckets.bucketList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return new ExpansionTile(
-            title: Text(buckets.bucketList[index].name),
-            children: <Widget>[
-              new Column(
-                children: _buildExpandableNotifs(buckets.bucketList[index])
-              )
-            ]
-          );
-        }
+        children: <Widget> [
+          for(Bucket b in buckets.bucketList)
+            ExpansionTile(
+              key: ValueKey(b),
+              title: Text(b.name),
+              children: <Widget> [
+                new Column(
+                  children: _buildExpandableNotifs(b)
+                )
+              ]
+            )
+        ]
       )
     );
   }
@@ -234,6 +238,8 @@ class _HomePageState extends State<HomePage> {
     return notifs;
   }
 
+  /*
+  Get Notifications from Backend
   Future<void> getNotifications() async {
     List<String> result = new List<String>();
     try {
@@ -245,4 +251,6 @@ class _HomePageState extends State<HomePage> {
       buckets = null;
     });
   }
+   */
+
 }

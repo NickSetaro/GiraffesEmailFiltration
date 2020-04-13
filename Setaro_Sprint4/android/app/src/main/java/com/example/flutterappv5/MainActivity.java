@@ -59,10 +59,11 @@ public class MainActivity extends FlutterActivity{
                                     result.success((filter.getEmailAddresses()));
                                 }
 
-                                /*else if(call.method.equals("getNotifications")){
-                                    result.success();
+                                else if(call.method.equals("getLifeTime")) {
+                                    //put lifetime int in appropriate place
+                                    //something = call.argument(key lifeTime);
+                                    result.success(null);
                                 }
-                                */
 
                         }
                     });

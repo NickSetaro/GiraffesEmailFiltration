@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'bucket_list.dart';
 import 'emailsettingslist.dart';
+import 'package:flutter/services.dart';
 
 class SettingsPage extends StatefulWidget {
 
@@ -14,6 +15,8 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _daily = true;
   bool _update = true;
   double _timer = 0;
+  int lifeTime = 1;
+  static const platform = MethodChannel("samples.flutter.dev/native");
 
   Brightness _getBrightness() {
     return _dark ? Brightness.dark : Brightness.light;
@@ -117,15 +120,28 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         _buildDivider(),
                         ListTile(
-                          leading: Icon(
-                            Icons.access_alarm,
+                          leading: Icon( Icons.access_alarm,
                             color: Colors.orangeAccent,
                           ),
-                          title: Text("Notification Life Time"),
-                          trailing: Icon(Icons.keyboard_arrow_right),
-                          onTap: () {
-
-                          },
+                          title: Text('Notification Life Time'),
+                          trailing: DropdownButton(
+                            value: lifeTime,
+                            icon: Icon(Icons.arrow_downward),
+                            onChanged: (int newLifeTime) {
+                              setState(() {
+                                lifeTime = newLifeTime;
+                                //function to send value to backend
+                              });
+                            },
+                            items: <int>[1,2,5,7,14]
+                                .map<DropdownMenuItem<int>>((int value) {
+                              return DropdownMenuItem<int>(
+                                value: value,
+                                child: Text(value.toString() + ' day(s)'),
+                              );
+                            })
+                                .toList(),
+                          ),
                         ),
                         _buildDivider(),
                         ListTile(
@@ -235,5 +251,13 @@ class _SettingsPageState extends State<SettingsPage> {
       height: 1.0,
       color: Colors.grey.shade400,
     );
+  }
+
+  Future <void> sendLifeTime(int lifeTime) async {
+    try{
+      await platform.invokeMethod('sendLifeTime', <String,int>{'lifeTime': lifeTime});
+    } on PlatformException catch(e) {
+
+    }
   }
 }
