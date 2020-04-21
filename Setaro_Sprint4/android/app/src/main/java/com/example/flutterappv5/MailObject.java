@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -171,6 +172,20 @@ public class MailObject
      */
     public void setMessage(Object message) {
         this.message = message;
+    }
+
+    public String stringDate(){
+        return sentDate.toString();
+    }
+
+    public String stringMessage(){
+        return message.toString();
+    }
+    public ArrayList<String> contentList(){
+        ArrayList<String> list = new ArrayList<>();
+        list.add(subject);
+        list.add(stringMessage());
+        return list;
     }
 
 

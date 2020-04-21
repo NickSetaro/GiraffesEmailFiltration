@@ -19,34 +19,34 @@ class _emailListPage extends State<emailList> {
 
   @override
   Widget build(BuildContext context) {
-   return FutureBuilder<List>(
-       future: _getEmailList(),
+    return FutureBuilder<List>(
+        future: _getEmailList(),
         // ignore: missing_return
         builder: (BuildContext context, AsyncSnapshot<List> snapshot){
-        if(snapshot.hasError){
+          if(snapshot.hasError){
             return Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "Email List Empty",
-                style: TextStyle(fontSize: 22.0),),
+                child: Text(
+                  "Email List Empty",
+                  style: TextStyle(fontSize: 22.0),),
               ),
             );
-        }
-        else if(snapshot.hasData) {
-          return new SingleChildScrollView(
-            padding: new EdgeInsets.all(16.0),
-            child: Text(
-              snapshot.data.toString(), style: TextStyle(fontSize: 22.0),),
-          );
-        }
-      });
-    }
+          }
+          else if(snapshot.hasData) {
+            return new SingleChildScrollView(
+              padding: new EdgeInsets.all(16.0),
+              child: Text(
+                snapshot.data.toString(), style: TextStyle(fontSize: 22.0),),
+            );
+          }
+        });
+  }
 
 
-    Future<List> _getEmailList() async{
-      final emails = await platform.invokeListMethod('getemaillist');
-      log(emails[0]);
-      return emails;
+  Future<List> _getEmailList() async{
+    final emails = await platform.invokeListMethod('getemaillist');
+    log(emails[0]);
+    return emails;
   }
 }

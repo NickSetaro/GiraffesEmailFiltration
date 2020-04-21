@@ -82,7 +82,10 @@ class _LoginPageState extends State<LoginPage> {
 
           if(sCheck == "true"){
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
+                context, MaterialPageRoute(builder: (context) => HomePage(
+              email: emailController.text,
+              password: passwordController.text,
+            )));
           }else{
           }
         },
@@ -169,7 +172,10 @@ class _LoginPageState extends State<LoginPage> {
 
 class HomePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  String email;
+  String password;
+  HomePage({this.email,this.password});
+  _HomePageState createState() => _HomePageState(email: email, password: password);
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('Rowan Email Filtration')));
@@ -178,12 +184,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  String email;
+  String password;
+  _HomePageState({this.email, this.password});
   ListOfBuckets buckets = new ListOfBuckets();
 
   static const platform = MethodChannel("samples.flutter.dev/native");
-
-  String email;
-  String password;
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -192,6 +198,7 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.refresh),
             onPressed: () {
               //refresh notifications
+              _getNotifications();
             }
         ),
        IconButton(
@@ -209,7 +216,7 @@ class _HomePageState extends State<HomePage> {
         },
         padding: const EdgeInsets.all(8),
         children: <Widget> [
-          for(Bucket b in buckets.bucketList)
+          for(Bucket b in buckets.buckets)
             ExpansionTile(
               key: ValueKey(b),
               title: Text(b.name),
@@ -240,30 +247,30 @@ class _HomePageState extends State<HomePage> {
     return notifs;
   }
 
+  // example method to reorder list
   _reorder(int oldIndex, int newIndex) {
     setState((){
       if(newIndex > oldIndex) {
         newIndex -= 1;
       }
-      final Bucket b = buckets.bucketList.removeAt(oldIndex);
-      buckets.bucketList.insert(newIndex, b);
+      final Bucket b = buckets.removeAt(oldIndex);
+      buckets.insertBucket(newIndex, b);
       },
     );
   }
 
-  /*
-  Get Notifications from Backend
-  Future<void> getNotifications() async {
-    List<String> result = new List<String>();
-    try {
-      result = await platform.invokeListMethod('getNotifications');
-    }on PlatformException catch (e) {
-      result = null;
-    }
-    setState(() {
-      buckets = null;
-    });
-  }
-   */
+  Future<void> _getNotifications() {
 
+  }
+
+  //sample method to reorder list
+  /*
+  Future<void> _reorder(int oldIndex, int newIndex) async {
+    try {
+      await platform.invokeMethod('reorder', <String, int>{'oldIndex': oldIndex, 'newIndex': newIndex});
+    } on PlatformException catch(e) {
+
+    }
+  }
+  */
 }

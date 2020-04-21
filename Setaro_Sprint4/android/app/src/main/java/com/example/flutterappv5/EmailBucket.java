@@ -1,7 +1,11 @@
 package com.example.flutterappv5;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +18,7 @@ public class EmailBucket implements Serializable
 	private String bucketName;
 	private ArrayList<MailObject> messages; 
 	public static ArrayList<EmailBucket> emailBuckets;
+	public HashMap<String, ArrayList<String>> returnMap;
 
 	private static Logger logger = Logger.getLogger(EmailBucket.class.getName());
 	private static final long serialVersionUID = 1L;
@@ -48,7 +53,7 @@ public class EmailBucket implements Serializable
 	/**
 	 * sortMail(ArrayList<MailObject>) sorts a ArrayList of MailObjects into the appropriate bucket. 
 	 * If a bucket doesn't exist, one is created.
-	 * @param m is MailObject to be sorted into a folder.
+	 * @param 'm' is MailObject to be sorted into a folder.
 	 */
 	public static void sortMail(ArrayList<MailObject> mail)
 	{
@@ -83,7 +88,7 @@ public class EmailBucket implements Serializable
 	/**
 	 * sortMail(MailObject) sorts a single MailObject into the appropriate bucket. If a bucket doesn't 
 	 * exist, one is created.
-	 * @param m is MailObject to be sorted into a folder.
+	 * @param 'm' is MailObject to be sorted into a folder.
 	 */
 //	public static void sortMail(MailObject m) 
 //	{
@@ -186,6 +191,7 @@ public class EmailBucket implements Serializable
 		
 	}
 	
+	@TargetApi(Build.VERSION_CODES.N)
 	private static EmailBucket mergeBuckets(EmailBucket one, EmailBucket two)
 	{
 		
@@ -245,6 +251,15 @@ public class EmailBucket implements Serializable
 	 */
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+
+	public HashMap<String,ArrayList<String>> messageMap(){
+		HashMap<String, ArrayList<String>> returnMap = new HashMap<>();
+		for(MailObject m: messages){
+			returnMap.put(m.stringDate(), m.contentList());
+		}
+		return returnMap;
 	}
 	
 

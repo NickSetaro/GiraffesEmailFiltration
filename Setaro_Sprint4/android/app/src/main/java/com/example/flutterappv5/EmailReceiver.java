@@ -1,5 +1,8 @@
 package com.example.flutterappv5;
 
+import android.annotation.TargetApi;
+import android.os.Build;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -114,7 +117,7 @@ public class EmailReceiver
             Folder inbox = s.getFolder("INBOX");
             inbox.open(Folder.READ_ONLY);
 
-            messages = inbox.getMessages(inbox.getMessageCount()-300, inbox.getMessageCount());
+            messages = inbox.getMessages(inbox.getMessageCount()-100, inbox.getMessageCount());
 
             newMail = extractComponents(messages, filter);// with Filter object
             // disconnect
@@ -139,6 +142,7 @@ public class EmailReceiver
      * @throws IOException
      */
     //added Filter parameter
+    @TargetApi(Build.VERSION_CODES.O)
     public ArrayList<MailObject> extractComponents(Message[] messages, Filter filter) throws MessagingException, IOException
     {
         ArrayList<MailObject> newMail = new ArrayList<MailObject>();
@@ -356,6 +360,10 @@ public class EmailReceiver
                 AliasEmails.remove(i);
             }
         }
+    }
+
+    public void setFilter(Filter newFilter){
+        filter = newFilter;
     }
 
 }
