@@ -1,0 +1,3 @@
+Change receiver to only pull new emails after the first search.
+Changed receiver to not search the inbox if no there are no new emails in inbox after the last searched email.
+Switched the order of the emails printed to have the newest print first.
