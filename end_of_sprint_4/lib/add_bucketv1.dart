@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 
 class AddBucket extends StatelessWidget {
 
+  final controllerName = TextEditingController();
+  final controllerAddress = TextEditingController();
   static const platform = MethodChannel("samples.flutter.dev/native");
   String result;
 
@@ -16,8 +18,6 @@ class AddBucket extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controllerName = TextEditingController();
-    final controllerAddress = TextEditingController();
     String name;
     String address;
     return Container(

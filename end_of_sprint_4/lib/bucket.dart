@@ -16,4 +16,8 @@ class Bucket {
   void addNotification(Notif n) {
     notifications.add(n);
   }
+
+  void clearNotifications() {
+    notifications = new List<Notif>();
+  }
 }

@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(title: Text('Notifications'), actions: <Widget>[
           IconButton (
-              icon: const Icon(Icons.cloud_download),
+              icon: const Icon(Icons.refresh),
               /*
               This connects to the inbox and pull the emails over to native. Had to keep this seperate from the channel for getting the nots from native.
               Pull down on the screen to update the nots after pressing this button
@@ -313,7 +313,6 @@ class _HomePageState extends State<HomePage> {
 
         body: new Container(
             child: new Center(
-                child: new RefreshIndicator(
                   child: ListView.builder(
                       padding: const EdgeInsets.all(8),
                       itemCount: buckets.bucketList.length,
@@ -332,8 +331,6 @@ class _HomePageState extends State<HomePage> {
                         );
                       }
                   ),
-                  onRefresh: _refreshPage,
-                )
             )
         )
     );
@@ -410,9 +407,6 @@ class _HomePageState extends State<HomePage> {
 //  }
 
 
-
-
-
   Future<void> checkMail(String email, String password) async {
     String result;
     try {
@@ -445,6 +439,7 @@ class _HomePageState extends State<HomePage> {
     Notif not;
     var body;
     int notIndex = 0;
+    b.clearNotifications();
     for(int i = 0; i < notList.length; i++){
       if(notList[i] == "/" + notIndex.toString()){
         not = new Notif(b.address);

@@ -141,7 +141,7 @@ public class EmailReceiver
             inbox.open(Folder.READ_ONLY);
 
             if(filter.lastCheck == null) {
-                messages = inbox.getMessages(inbox.getMessageCount()-50, inbox.getMessageCount());
+                messages = inbox.getMessages(Math.max(1, inbox.getMessageCount()-50), inbox.getMessageCount());
                 newMail = extractComponents(messages, filter);
                 lastSearch = inbox.getMessageCount();
                 filter.updateLastCheck();
