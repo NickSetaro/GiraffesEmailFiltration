@@ -7,12 +7,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 //import 'package:flutterappv5/receiver.dart';
-import 'add_bucketv1.dart';
 import 'package:flutter/services.dart';
 import 'bucket.dart';
 import 'bucket_list.dart';
 import 'settings.dart';
 import 'notifications.dart';
+import 'dart:io';
 
 void main() => runApp(MyApp());
 
@@ -190,6 +190,8 @@ class _HomePageState extends State<HomePage> {
 
   final String email;
   final String password;
+  final controllerName = TextEditingController();
+  final controllerAddress = TextEditingController();
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   new FlutterLocalNotificationsPlugin();
@@ -297,14 +299,68 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) =>
-                    AddBucket((name, address){
-                       buckets.addBucket(name, address);
-                       setState(() {
-                      Navigator.pop(context);
-                       });
-                    }));
+              context: context,
+              builder: (context) =>
+                  Container(
+                    color: Color(0xff757575),
+                    child: Container(
+                      height: 510,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20), topLeft: Radius.circular(20))),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                        Text(
+                        'Add Bucket',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.lightBlueAccent,
+                          ),
+                        ),
+                        TextField(
+                        controller: controllerName,
+                        autofocus: true,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                            hintText: "Bucket Name",
+                            border:
+                            OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
+                        ),
+                        TextField(
+                        controller: controllerAddress,
+                        autofocus: true,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                            hintText: "Enter Email Address",
+                            border:
+                            OutlineInputBorder(borderRadius: BorderRadius.circular(10.0))),
+                          ),
+                        FlatButton(
+                          child: Text(
+                          'Add',
+                          style: TextStyle(color: Colors.white),
+                          ),
+                          color: Colors.lightBlueAccent,
+                          onPressed: () async {
+                            addEmail(controllerAddress.text);
+                            Navigator.pop(context);
+                            buckets.getBucketList().add(new Bucket(controllerName.text, controllerAddress.text));
+                            setState(() {
+
+                            });
+                          }
+                        )
+                        ],
+                      ),
+                    )
+                  ),
+            );
           },
           tooltip: 'Add Bucket',
           child: const Icon(Icons.add),
@@ -454,9 +510,20 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> addEmail(String email) async{
+    String result = "";
+    try{
+      result = await platform.invokeMethod('addEmail', {
+        "email": email
+      });
 
+    }on PlatformException catch (e) {
+      result = "Failed to Invoke: '${e.message}'.";
+    }
+  }
 
 }
+
 
 class SecondRoute extends StatelessWidget {
   @override
@@ -477,3 +544,4 @@ class SecondRoute extends StatelessWidget {
     );
   }
 }
+
