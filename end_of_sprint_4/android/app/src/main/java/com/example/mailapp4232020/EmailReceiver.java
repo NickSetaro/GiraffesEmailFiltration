@@ -26,6 +26,8 @@ import javax.mail.event.MessageCountAdapter;
 import javax.mail.event.MessageCountEvent;
 import javax.mail.internet.MimeMultipart;
 
+import java.util.Calendar;
+
 public class EmailReceiver
 {
     public final Logger logger = Logger.getLogger(EmailReceiver.class.getName());
@@ -45,6 +47,8 @@ public class EmailReceiver
     public ArrayList<String> recentMail = new ArrayList<String>();
     private ArrayList<String> AliasEmails = new ArrayList<String>();
     private int lastSearch = 0;
+
+    private Date currDate = Calendar.getInstance().getTime();
 
     EmailReceiver() {
 
