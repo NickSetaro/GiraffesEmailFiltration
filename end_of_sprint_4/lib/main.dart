@@ -284,9 +284,12 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState(this.email, this.password);
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Notifications'), actions: <Widget>[
-          IconButton (
+    return MaterialApp(
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(title: Text('Home Page'), actions: <Widget>[
+            IconButton (
               icon: const Icon(Icons.refresh),
               /*
               This connects to the inbox and pull the emails over to native. Had to keep this seperate from the channel for getting the nots from native.
@@ -296,17 +299,25 @@ class _HomePageState extends State<HomePage> {
                 await checkMail(email, password);
                 _refreshPage();
               }
-          ),
-          IconButton(
+            ),
+            IconButton(
               icon: const Icon(Icons.settings),
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => SettingsPage()));
               }),
-        ]),
+            ],
+            bottom: TabBar(
+              tabs: [
+                Tab(text: 'Notifications'),
+                Tab(text: 'Pinned'),
+                Tab(text: 'Snoozed')
+              ]
+            )
+          ),
 
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
             showModalBottomSheet(
               context: context,
               builder: (context) =>
@@ -371,12 +382,13 @@ class _HomePageState extends State<HomePage> {
                   ),
             );
           },
-          tooltip: 'Add Bucket',
-          child: const Icon(Icons.add),
+            tooltip: 'Add Bucket',
+            child: const Icon(Icons.add),
         ),
 
 
-        body: new Container(
+          body: TabBarView(
+           children: <Widget> [Container(
             child: new Center(
                   child: ListView.builder(
                       padding: const EdgeInsets.all(8),
@@ -397,7 +409,13 @@ class _HomePageState extends State<HomePage> {
                       }
                   ),
             )
-        )
+        ),
+             Text('Pinned'),
+             Text('Snoozed')
+        ]
+      )
+      )
+      )
     );
   }
 
