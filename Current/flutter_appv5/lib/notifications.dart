@@ -6,6 +6,10 @@ class Notif{
   String dateAndBody;
   String url;
   String uuid;
+  bool pinned = false;
   Notif(this.address);
 
+  void toggle() {
+    pinned = !pinned;
   }
+}

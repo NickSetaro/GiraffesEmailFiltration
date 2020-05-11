@@ -198,6 +198,8 @@ class _HomePageState extends State<HomePage> {
   static const platform = MethodChannel("samples.flutter.dev/native");
   List<String> notList = new List<String>();//final?
   List<String> keyWordList = new List<String>();
+  List<Notif> pinned = new List<Notif>();
+  List<Notif> snoozed = new List<Notif>();
 
   final String email;
   final String password;
@@ -446,8 +448,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                       )
                   ),
-                  new Text('Pinned'),
-                  new Text('Snoozed'),
+                  new Column(
+                    children: _buildPinnedNotifs()
+                  ),
+                  new Column(
+                    children: _buildSnoozedNotifs()
+                  )
                 ]
               )
 
@@ -470,6 +476,98 @@ class _HomePageState extends State<HomePage> {
     return keywords;
     }
 
+  _buildPinnedNotifs() {
+    List<Widget> notifs = [];
+    if(pinned.isEmpty){
+      notifs.add(Text('No pinned notifications'));
+    }else {
+      for (Notif notif in pinned) {
+        notifs.add(
+            new Column(
+                children: <Widget>[
+                  Divider(
+                    height: 20,
+                    thickness: 0,
+                  ),
+                  Card(
+                    elevation: 15,
+                    child: ListTile(
+                        title: new Text(notif.subject.substring(
+                            0, min(notif.subject.length, 40))),
+                        subtitle: new Text(notif.dateAndBody),
+                        trailing: IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            notif.toggle();
+                            pinned.remove(notif);
+                            setState(() {
+                              build(context);
+                            });
+                          },
+                        ),
+                        onTap: () {
+                          AndroidIntent intent = AndroidIntent(
+                            action: 'android.intent.action.MAIN',
+                            category: 'android.intent.category.APP_EMAIL',
+                          );
+                          intent.launch().catchError((e) {});
+                        }
+                    ),
+                  ),
+                ]
+            )
+        );
+      }
+    }
+    return notifs;
+  }
+
+  _buildSnoozedNotifs() {
+    List<Widget> notifs = [];
+    if(snoozed.isEmpty) {
+      notifs.add(Text('No snoozed notifications'));
+    } else {
+      for (Notif notif in snoozed) {
+        notifs.add(
+            new Column(
+                children: <Widget>[
+                  Divider(
+                    height: 20,
+                    thickness: 0,
+                  ),
+                  Card(
+                    elevation: 15,
+                    child: ListTile(
+                        title: new Text(notif.subject.substring(
+                            0, min(notif.subject.length, 40))),
+                        subtitle: new Text(notif.dateAndBody),
+                        trailing: IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            notif.toggle();
+                            snoozed.remove(notif);
+                            setState(() {
+                              build(context);
+                            });
+                          },
+                        ),
+                        onTap: () {
+                          AndroidIntent intent = AndroidIntent(
+                            action: 'android.intent.action.MAIN',
+                            category: 'android.intent.category.APP_EMAIL',
+                          );
+                          intent.launch().catchError((e) {});
+                        }
+                    ),
+                  ),
+                ]
+            )
+        );
+      }
+    }
+    return notifs;
+  }
+
   _buildExpandableNotifs(Bucket bucket) {
     List<Widget> notifs = [];
     for (Notif notif in bucket.notifications)
@@ -486,14 +584,34 @@ class _HomePageState extends State<HomePage> {
                       title: new Text(notif.subject.substring(
                           0, min(notif.subject.length, 40))),
                       subtitle: new Text(notif.dateAndBody),
-                      trailing: IconButton(
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget> [
+                          IconButton(
+                            icon: Icon(Icons.fiber_pin),
+                            onPressed: () {
+                              if(notif.pinned) {
+                                pinned.remove(notif);
+                              } else {
+                                pinned.add(notif);
+                              }
+                              notif.toggle();
+                              setState(() {
+
+                              });
+                            },
+                            color: notif.pinned ? Colors.blue: Colors.grey
+                          ),
+                        IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
                           bucket.removeNot(notif.uuid);
                           setState(() {
                             build(context);
                           });
-                        },
+                          },
+                          ),
+                        ]
                       ),
                       onTap: () {
                         AndroidIntent intent = AndroidIntent(
