@@ -14,6 +14,7 @@ import 'bucket_list.dart';
 import 'settings.dart';
 import 'notifications.dart';
 import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(MyApp());
 
@@ -128,6 +129,14 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 15.0,
                 ),
+                InkWell(
+                    child: Text('Forgot Password?'),
+                    onTap: () async {
+                      if(await canLaunch("https://id.rowan.edu")) {
+                        await launch("https://id.rowan.edu");
+                      }
+                    }
+                )
               ],
             ),
           ),
