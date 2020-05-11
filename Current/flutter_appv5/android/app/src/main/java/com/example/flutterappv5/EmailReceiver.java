@@ -140,14 +140,14 @@ public class EmailReceiver
             inbox.open(Folder.READ_ONLY);
 
             if(filter.lastCheck == null) {
-                messages = inbox.getMessages(inbox.getMessageCount()-50, inbox.getMessageCount());
+                messages = inbox.getMessages(Math.max(1,inbox.getMessageCount()-50), inbox.getMessageCount());
                 newMail = extractComponents(messages, filter);
                 filter.lastIndex = inbox.getMessageCount();
 
             }
             else if(inbox.getMessage(inbox.getMessageCount()).getSentDate().after(filter.lastCheck)) {
                     end = inbox.getMessageCount();
-                    messages = inbox.getMessages(filter.lastIndex, end);
+                    messages = inbox.getMessages(Math.max(1,filter.lastIndex), end);
                     newMail = extractComponents(messages, filter);
                     filter.lastIndex = inbox.getMessageCount();
             }

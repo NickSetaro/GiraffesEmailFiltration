@@ -286,9 +286,12 @@ class _HomePageState extends State<HomePage> {
 
   _HomePageState(this.email, this.password);
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Notifications'), actions: <Widget>[
-          IconButton (
+    return MaterialApp(
+      home:DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(title: Text('Notifications'), actions: <Widget>[
+            IconButton (
               icon: const Icon(Icons.refresh),
               /*
               This connects to the inbox and pull the emails over to native. Had to keep this seperate from the channel for getting the nots from native.
@@ -300,15 +303,23 @@ class _HomePageState extends State<HomePage> {
                 _refreshPage();
               }
           ),
-          IconButton(
+            IconButton(
               icon: const Icon(Icons.settings),
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => SettingsPage(email)));
               }),
-        ]),
+        ],
+              bottom: TabBar(
+              tabs: [
+                  Tab(text: 'Notifications'),
+                  Tab(text: 'Pinned'),
+                  Tab(text: 'Snoozed')
+              ]
+          )
+        ),
 
-        floatingActionButton: FloatingActionButton(
+          floatingActionButton: FloatingActionButton(
           onPressed: () {
             showModalBottomSheet(
               context: context,
@@ -375,64 +386,73 @@ class _HomePageState extends State<HomePage> {
                   ),
             );
           },
-          tooltip: 'Add Bucket',
-          child: const Icon(Icons.add),
+            tooltip: 'Add Bucket',
+            child: const Icon(Icons.add),
         ),
 
-              body: new Container(
-                child: new Center(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: buckets.bucketList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                          return Stack(
-                              children: <Widget>[
-                                Card(
-                                  color: (index % 2 == 0) ? Colors.white: Colors.white60,
-                                  child: ExpansionTile(
-                                    title: Text(buckets.bucketList[index].name),
-                                    subtitle: Text(buckets.bucketList[index].address),
-                                    children: <Widget>[
-                                      new SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Row(
-                                        children: <Widget>[
-                                          Wrap(
-                                            spacing: 5.0,
-                                            children:_buildKeywordList(buckets.bucketList[index]),
-                                          )
-                                        ]),
+              body: TabBarView(
+                children: <Widget>[
+                  new Container(
+                      child: new Center(
+                        child: ListView.builder(
+                            padding: const EdgeInsets.all(8),
+                            itemCount: buckets.bucketList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Stack(
+                                  children: <Widget>[
+                                    Card(
+                                      color: (index % 2 == 0) ? Colors.white: Colors.white60,
+                                      child: ExpansionTile(
+                                          title: Text(buckets.bucketList[index].name),
+                                          subtitle: Text(buckets.bucketList[index].address),
+                                          children: <Widget>[
+                                            new SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Row(
+                                                  children: <Widget>[
+                                                    Wrap(
+                                                      spacing: 5.0,
+                                                      children:_buildKeywordList(buckets.bucketList[index]),
+                                                    )
+                                                  ]),
+                                            ),
+                                            new Column(
+                                                children: _buildExpandableNotifs(
+                                                    buckets.bucketList[index])
+                                            ),
+                                          ]
                                       ),
-                                      new Column(
-                                        children: _buildExpandableNotifs(
-                                          buckets.bucketList[index])
+                                    ),
+                                    Positioned(
+                                      right: 39.0,
+                                      top: 16.0,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          getKeyWords(buckets.bucketList[index].address);
+                                          if(buckets.bucketList[index].keyWords.length == 5){
+                                            _maxKeywordAlert();
+                                          }
+                                          else {
+                                            _addKeyword(buckets.bucketList[index].address);
+                                          }
+                                        },
+                                        iconSize: 28.0,
+                                        icon: Icon(Icons.add),
                                       ),
-                                    ]
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 39.0,
-                                  top: 16.0,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      getKeyWords(buckets.bucketList[index].address);
-                                      if(buckets.bucketList[index].keyWords.length == 5){
-                                        _maxKeywordAlert();
-                                      }
-                                      else {
-                                        _addKeyword(buckets.bucketList[index].address);
-                                      }
-                                    },
-                                    iconSize: 28.0,
-                                    icon: Icon(Icons.add),
-                                  ),
-                                ),
-                              ]
-                          );
-                    }
+                                    ),
+                                  ]
+                              );
+                            }
+                        ),
+                      )
                   ),
-                )
-              ),
+                  new Text('Pinned'),
+                  new Text('Snoozed'),
+                ]
+              )
+
+          )
+      )
     );
   }
   _buildKeywordList(Bucket b){
