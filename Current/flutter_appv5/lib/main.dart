@@ -603,6 +603,16 @@ class _HomePageState extends State<HomePage> {
                             color: notif.pinned ? Colors.blue: Colors.grey
                           ),
                         IconButton(
+                          icon: Icon(Icons.snooze),
+                          onPressed: () {
+                              _snoozeNotif(notif);
+                              setState(() {
+
+                              });
+                            },
+                          color: notif.snoozed ? Colors.blue: Colors.grey
+                          ),
+                        IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
                           bucket.removeNot(notif.uuid);
@@ -826,6 +836,93 @@ class _HomePageState extends State<HomePage> {
       return true;
   }
 
+  _snoozeNotif(Notif notif){
+    snoozed.add(notif);
+    int dropdownValueHour = 1;
+    int dropdownValueDay = 0;
+    showModalBottomSheet(
+      context: context,
+      builder: (context) =>
+      new Container(
+        color: Color(0xff757575),
+        child: Container(
+          height: 510,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20))),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Choose Time to Snooze Notification',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.lightBlueAccent,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget> [
+                  DropdownButton<int>(
+                    value: dropdownValueHour,
+                  onChanged: (int newValue) {
+                    setState(() {
+                      dropdownValueHour = newValue;
+                    });
+                  },
+                    items: <int> [1,2,5,10,15]
+                      .map<DropdownMenuItem<int>>((int value) {
+                        return DropdownMenuItem<int>(
+                          value: value,
+                          child: Text(value.toString()),
+                        );
+                    }).toList(),
+              ),
+                  Text('Hour(s)')
+                ]
+               ),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget> [
+                    DropdownButton<int>(
+                      value: dropdownValueDay,
+                      onChanged: (int newValue) {
+                        setState(() {
+                          dropdownValueDay = newValue;
+                        });
+                      },
+                      items: <int> [0,1,2,5,7,14]
+                          .map<DropdownMenuItem<int>>((int value) {
+                        return DropdownMenuItem<int>(
+                          value: value,
+                          child: Text(value.toString()),
+                        );
+                      }).toList(),
+                    ),
+                    Text('Day(s)')
+                  ]
+              ),
+              FlatButton(
+                  child: Text(
+                    'Snooze',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: Colors.lightBlueAccent,
+                  onPressed: () {
+                    notif.snoozeHours = dropdownValueHour;
+                    notif.snoozeDays = dropdownValueDay;
+                  }
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
 }
 

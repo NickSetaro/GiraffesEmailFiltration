@@ -1,3 +1,5 @@
+
+
 class Notif{
   String address;
   String subject;
@@ -7,6 +9,10 @@ class Notif{
   String url;
   String uuid;
   bool pinned = false;
+  bool snoozed = false;
+  int snoozeHours = 0;
+  int snoozeDays = 0;
+
   Notif(this.address);
 
   void toggle() {
