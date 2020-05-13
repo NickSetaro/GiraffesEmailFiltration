@@ -18,9 +18,14 @@ class Listemail extends StatefulWidget {
 class listpage extends State<Listemail> {
   final dbms = DBMS.dbms;
   static const platform = MethodChannel("samples.flutter.dev/native");
-  List<dynamic> emails = <dynamic>[];
+  var emails;
   final teController = TextEditingController();
 
+  @override
+  void _initState() {
+    super.initState();
+    _getEmailList();
+  }
 
 
   Widget build(BuildContext context) {
@@ -37,7 +42,7 @@ class listpage extends State<Listemail> {
               alignment: Alignment(0, 0),
               color: Colors.orange,
               child: Text(
-                "To remove an item, swipe the tile to the right or tap the trash icon.",
+                "To remove an item, tap the trash icon.",
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -46,30 +51,14 @@ class listpage extends State<Listemail> {
             child: ListView.builder(
               itemCount: emails.length,
               itemBuilder: (context, index) {
-                final item = emails[index];
-                return Dismissible(
-                  key: Key(item),
-                  direction: DismissDirection.startToEnd,
-                  child: ListTile(
-                    title: Text(item),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete_forever),
-                      onPressed: () async {
+                return ListTile(
+                  title: Text(emails[index]),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete_forever),
+                    onPressed: () {
                         removeEmail(emails[index]);
-                        setState(() {
-
-                          _getEmailList();
-                        });
-                      },
-                    ),
-                  ),
-                  onDismissed: (direction) async {
-                    removeEmail(emails[index]);
-                    setState(() {
-
-                      _getEmailList();
-                    });
-                  },
+                    }
+                  )
                 );
               },
             ),
@@ -131,8 +120,8 @@ class listpage extends State<Listemail> {
     });
   }
 
-  Future<void> removeEmail(Map<String, dynamic> email) async{
-    await dbms.deleteMessage(email[DBMS.bucketColEmail], email[DBMS.mailColDate]);
+  Future<void> removeEmail(String address) async{
+    await dbms.deleteBucket(address);
   }
 
 

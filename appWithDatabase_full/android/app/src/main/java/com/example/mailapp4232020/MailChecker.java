@@ -126,7 +126,7 @@ public class MailChecker
             Folder inbox = s.getFolder("INBOX");
             inbox.open(Folder.READ_ONLY);
 
-            messages = inbox.getMessages(inbox.getMessageCount()-80, inbox.getMessageCount());
+            messages = inbox.getMessages(Math.max(1,inbox.getMessageCount()-80), inbox.getMessageCount());
 
             newMail = extractComponents(messages);// with Filter object
             // disconnect
@@ -154,7 +154,7 @@ public class MailChecker
         ArrayList<String> mailList = new ArrayList<String>();
         for(Message message: messages)
         {
-            if(lastCheck.before(message.getSentDate())){
+            //if(lastCheck.before(message.getSentDate())){
                 messageContent = MailChecker.parseContent(message);
                 Address[] fromAddress = message.getFrom();
                 from = fromAddress[0].toString();
@@ -180,7 +180,7 @@ public class MailChecker
                     System.out.println("\t Sent Date: " + sentDate);
                     System.out.println("\t Message: " + textFromHtml(messageContent));
                 }
-            }// print out details of each message
+            //}// print out details of each message
         }
         return mailList;
     }

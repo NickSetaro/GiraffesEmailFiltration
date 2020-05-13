@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 import 'bucket_list.dart';
-import 'emailsettingslist.dart';
 import 'emaillistsettings.dart';
+import 'package:mailapp4232020/dbms.dart';
+import 'main.dart';
 
 class SettingsPage extends StatefulWidget {
 
-  @override
-  _SettingsPageState createState() => _SettingsPageState();
+    final String userEmail;
+    SettingsPage(this.userEmail);
+  _SettingsPageState createState() => _SettingsPageState(userEmail);
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+
   bool _dark = false;
   bool _notification = true;
   bool _daily = true;
   bool _update = true;
   double _timer = 0;
+  final String userEmail;
+  final dbms = DBMS.dbms;
+
+  _SettingsPageState(this.userEmail);
+
 
   Brightness _getBrightness() {
     return _dark ? Brightness.dark : Brightness.light;
@@ -67,19 +75,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         //open edit profile
                       },
                       title: Text(
-                        "Users Email",
+                        userEmail,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                         ),
-                      ),
-                      leading: Icon(
-                        Icons.assignment_ind,
-                        color: Colors.white,
-                      ),
-                      trailing: Icon(
-                        Icons.edit,
-                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -91,18 +92,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Column(
                       children: <Widget>[
-                        ListTile(
-                          leading: Icon(
-                            Icons.lock_outline,
-                            color: Colors.orangeAccent,
-                          ),
-                          title: Text("Change Password"),
-                          trailing: Icon(Icons.keyboard_arrow_right),
-                          onTap: () {
-                            //open change password
-                          },
-                        ),
-                        _buildDivider(),
                         ListTile(
                           leading: Icon(
                             Icons.email,
@@ -117,29 +106,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           },
                         ),
                         _buildDivider(),
-                        ListTile(
-                          leading: Icon(
-                            Icons.access_alarm,
-                            color: Colors.orangeAccent,
-                          ),
-                          title: Text("Notification Life Time"),
-                          trailing: Icon(Icons.keyboard_arrow_right),
-                          onTap: () {
-
-                          },
-                        ),
-                        _buildDivider(),
-                        ListTile(
-                          leading: Icon(
-                            Icons.snooze,
-                            color: Colors.orangeAccent,
-                          ),
-                          title: Text("Snooze Settings"),
-                          trailing: Icon(Icons.keyboard_arrow_right),
-                          onTap: () {
-
-                          },
-                        ),
                       ],
                     ),
                   ),
@@ -156,32 +122,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     activeColor: Colors.orangeAccent,
                     contentPadding: const EdgeInsets.all(0),
                     value: _notification,
-                    title: Text("Received notification"),
+                    title: Text("Receive Push Notifications"),
                     onChanged: (bool value) {
                       setState(() {
                         _notification = value;
-                      });
-                    },
-                  ),
-                  SwitchListTile(
-                    activeColor: Colors.orangeAccent,
-                    contentPadding: const EdgeInsets.all(0),
-                    value: _daily,
-                    title: Text("Daily Notifications"),
-                    onChanged: (bool value) {
-                      setState(() {
-                        _daily = value;
-                      });
-                    },
-                  ),
-                  SwitchListTile(
-                    activeColor: Colors.orangeAccent,
-                    contentPadding: const EdgeInsets.all(0),
-                    value: _update,
-                    title: Text("Received App Updates"),
-                    onChanged: (bool value) {
-                      setState(() {
-                        _update = value;
                       });
                     },
                   ),
@@ -194,33 +138,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       color: Colors.indigo,
                     ),
                   ),
-                  const SizedBox(height: 60.0),
+                  const SizedBox(height: 15.0),
+                  InkWell(
+                    splashColor: Colors.orange,
+                    child: Text('Log Out', style: TextStyle(fontSize: 15.0)),
+                    onTap: () {
+                      _showCheck();
+                    }
+                  )
                 ],
               ),
             ),
-            Positioned(
-              bottom: -20,
-              left: -20,
-              child: Container(
-                width: 80,
-                height: 80,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.orangeAccent,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 00,
-              left: 00,
-              child: IconButton(
-                icon: const Icon(Icons.backspace),
-                onPressed: () {
-                  //log out
-                },
-              ),
-            )
           ],
         ),
       ),
@@ -235,6 +163,31 @@ class _SettingsPageState extends State<SettingsPage> {
       width: double.infinity,
       height: 1.0,
       color: Colors.grey.shade400,
+    );
+  }
+
+  void _logOut() {
+    dbms.logOut();
+  }
+
+  void _showCheck() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text("Log Out"),
+              content: Text("Are you sure you want to log out?"),
+              actions: <Widget>[
+                new FlatButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                  child: Text("Log Out"),
+                ),
+              ]
+          );
+        }
     );
   }
 }

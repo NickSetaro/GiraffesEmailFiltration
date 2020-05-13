@@ -183,7 +183,7 @@ class DBMS {
 
   }
 
-  Future<void> deleteMessage(String email, String date) async {
+  Future<void> deleteMessage(String email, String date, String subject) async {
     _db = await dbms.database;
     try{
       _db.delete(mailTable, where: '$mailColDate = ? AND $bucketColEmail = ?', whereArgs: [date, email]);
@@ -217,6 +217,8 @@ class DBMS {
   }
 
   Future<void> insertMessages(List<dynamic> newMail) async{
+    _db = await dbms.database;
+    _db.delete(mailTable);
     for(int i = 0;i < newMail.length;i += 7){
 
       Map<String, dynamic> mailObject = {
@@ -252,7 +254,7 @@ class DBMS {
     var mybucket = {'$bucketColName' : name, '$userColId' : 1, '$bucketColEmail' : email};
 
     await _db.insert(bucketTable, mybucket);
-    await dbms.insertKeywords(email, ['.*']);
+    //await dbms.insertKeywords(email, ['.*']);
 
   }
 
@@ -283,10 +285,17 @@ class DBMS {
     return await _db.query(userTable);
   }
 
+  void logOut() async {
+    _db = await dbms.database;
+    _db.delete(userTable);
+    print('User table deleted');
+  }
+
   Future<void> checkMail() async {
 
 
     List<dynamic> list = await dbms.queryUserData();
+    print(list);
     String email = list[0];
     String password = list[1];
     String date = list[2];
@@ -381,7 +390,7 @@ class DBMS {
   $mailColSubject VARCHAR(400),
   $mailColSender VARCHAR(75) NOT NULL,
   $mailColCCList VARCHAR(1000) NULL,
-  $mailColDate INTEGER NOT NULL,
+  $mailColDate VARCHAR(75) NOT NULL,
   $bucketColEmail VARCHAR(100) NOT NULL,
   CONSTRAINT idmail_bucket
     FOREIGN KEY ($bucketColEmail)
@@ -405,6 +414,5 @@ class DBMS {
     ON UPDATE CASCADE
   )
           ''');
-
   }
 }
